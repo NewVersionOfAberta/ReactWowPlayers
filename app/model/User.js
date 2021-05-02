@@ -17,7 +17,7 @@ export const PlayerClass = Object.freeze({
 
 export class User {
   coordinates = "";
-  imageUrls = "";
+  imageUrls = [];
   videoUrl = "";
 
   constructor(

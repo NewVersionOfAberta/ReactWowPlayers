@@ -1,12 +1,80 @@
-import React from "react";
-import { View, Button, TextInput, StyleSheet, Text } from "react-native";
+import React, { useContext } from "react";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { Image, StyleSheet, View, Text } from "react-native";
+import { useUsers } from "../context/UserContext";
+//import { Text } from "react-native-paper";
 
-const MapScreen = () => {
+const mapRegion = {
+  latitude: 53.89168,
+  longitude: 27.54893,
+  latitudeDelta: 11,
+  longitudeDelta: 11,
+};
+
+const UserMapIcon = (props) => {
+  const { user } = props;
+
   return (
-    <View>
-      <Text>Map</Text>
+    <View style={styles.markerContainer}>
+      <Text style={styles.markerText}>{user.nickname}</Text>
+      <Image
+        source={{
+          uri: user.avatarUrl,
+        }}
+        style={styles.image}
+      />
     </View>
   );
 };
 
-export default MapScreen;
+const Map = ({ navigation }) => {
+  const { users } = useUsers();
+
+  return (
+    <View style={styles.container}>
+      <MapView provider={PROVIDER_GOOGLE} style={styles.map} region={mapRegion}>
+        {users
+          .filter((user) => user.coordinates)
+          .map((user, i) => (
+            <Marker
+              coordinate={user.coordinates}
+              onPress={() =>
+                navigation.navigate("Details", {
+                  userId: user.id,
+                  userName: user.nickname,
+                })
+              }
+              key={i}
+            >
+              <UserMapIcon key={i} user={user} />
+            </Marker>
+          ))}
+      </MapView>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  markerContainer: {
+    alignContent: "center",
+    alignItems: "center",
+  },
+  markerText: {
+    padding: 3,
+    backgroundColor: "#00000060",
+  },
+  image: {
+    height: 25,
+    width: 25,
+    marginTop: 8,
+    borderRadius: 4,
+  },
+});
+
+export default Map;

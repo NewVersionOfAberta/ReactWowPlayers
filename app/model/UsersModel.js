@@ -20,7 +20,7 @@ class UsersModel {
         .signInWithEmailAndPassword(email, password)
         .then(async (credentials) => {
           login(credentials.user.uid);
-          console.log(this.loadUsers());
+          this.loadUsers();
         })
         .catch((error) => {
           message = "Login failed";
@@ -109,6 +109,7 @@ class UsersModel {
   async updateUser(user) {
     console.log("To update : ", user);
     await this.userCollection.doc(user.id).set({ ...user });
+    loadUsers();
   }
 }
 
