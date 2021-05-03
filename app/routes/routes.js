@@ -10,6 +10,7 @@ import SettingsScreen from "../screens/Settings";
 import { useAuth } from "../context/AuthContext";
 import DetailsScreen from "../screens/Details";
 import EditScreen from "../screens/Edit";
+import CoordinatesPicker from "../components/CoordinatesPicker";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -73,6 +74,13 @@ const useRoutes = () => {
         component={EditScreen}
         options={{
           title: "Edit",
+        }}
+      />
+      <Stack.Screen
+        name="CoordinatesPicker"
+        component={CoordinatesPicker}
+        options={{
+          title: "CoordinatesPicker",
         }}
       />
     </Stack.Navigator>

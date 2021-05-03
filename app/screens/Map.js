@@ -2,27 +2,21 @@ import React, { useContext } from "react";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { Image, StyleSheet, View, Text } from "react-native";
 import { useUsers } from "../context/UserContext";
+import { mapRegion } from "../constants/costants";
 //import { Text } from "react-native-paper";
-
-const mapRegion = {
-  latitude: 53.89168,
-  longitude: 27.54893,
-  latitudeDelta: 11,
-  longitudeDelta: 11,
-};
 
 const UserMapIcon = (props) => {
   const { user } = props;
 
   return (
     <View style={styles.markerContainer}>
-      <Text style={styles.markerText}>{user.nickname}</Text>
-      <Image
+      <Text style={styles.markerText}>{user.username}</Text>
+      {/* <Image
         source={{
           uri: user.avatarUrl,
         }}
         style={styles.image}
-      />
+      /> */}
     </View>
   );
 };

@@ -7,8 +7,9 @@ import {
   TextInput,
   StyleSheet,
   Image,
-  FlatList,
+  Text,
 } from "react-native";
+import { IconButton } from "react-native-paper";
 import usersModel from "../model/UsersModel";
 import { Fraction, Race, PlayerClass, User } from "../model/User";
 import { Picker } from "@react-native-picker/picker";
@@ -83,7 +84,7 @@ const ImageDisplayer = (props) => {
   );
 };
 
-const EditScreen = ({ route }) => {
+const EditScreen = ({ route, navigation }) => {
   const { user } = route.params;
   const [form, setForm] = useState({
     id: user.id,
@@ -110,6 +111,10 @@ const EditScreen = ({ route }) => {
 
   const onChangeText = (key, val) => {
     setForm({ ...form, [key]: val });
+  };
+
+  const setCoordinates = (coordinates) => {
+    setForm({ ...form, coordinates });
   };
 
   const pickImage = async () => {
@@ -229,6 +234,28 @@ const EditScreen = ({ route }) => {
         placeholderTextColor="white"
         onChangeText={(val) => onChangeText("age", val)}
       />
+      <Text>Longitude: {form.coordinates.longitude}</Text>
+      <Text>Latitude: {form.coordinates.latitude}</Text>
+      <View style={styles.coordinatesEdit}>
+        <IconButton
+          icon="plus-circle"
+          size={25}
+          onPress={() =>
+            navigation.navigate("CoordinatesPicker", {
+              setCoordinates,
+            })
+          }
+          color={"grey"}
+          style={{ margin: 0 }}
+        />
+        <IconButton
+          icon="minus-circle"
+          size={25}
+          onPress={() => setCoordinates("")}
+          color={"grey"}
+          style={{ margin: 0 }}
+        />
+      </View>
       <ImageDisplayer>{{ form, setForm }}</ImageDisplayer>
       <Button title="Add image" onPress={pickImage}></Button>
       <VideoDisplayer>{form.videoUrl}</VideoDisplayer>
@@ -281,6 +308,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+  },
+  coordinatesEdit: {
+    display: "flex",
+    flexDirection: "row",
   },
 });
 

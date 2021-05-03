@@ -109,7 +109,7 @@ class UsersModel {
   async updateUser(user) {
     console.log("To update : ", user);
     await this.userCollection.doc(user.id).set({ ...user });
-    loadUsers();
+    this.loadUsers();
   }
 }
 
