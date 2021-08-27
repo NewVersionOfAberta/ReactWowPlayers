@@ -1,132 +1,154 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
-  Button,
   ScrollView,
   StyleSheet,
   Image,
-  Text,
+  TouchableOpacity,
 } from "react-native";
+import Text from "../components/CustomText";
 import usersModel from "../model/UsersModel";
-import { Video, AVPlaybackStatus } from "expo-av";
-
-const VideoDisplayer = (props) => {
-  const video = React.useRef(null);
-  const videoUrl = props.children;
-  console.log("Video: ", videoUrl);
-  const [status, setStatus] = React.useState({});
-  return (
-    <View style={styles.container}>
-      <Video
-        ref={video}
-        style={styles.video}
-        source={{
-          uri: videoUrl,
-        }}
-        useNativeControls
-        resizeMode="contain"
-        isLooping
-        onPlaybackStatusUpdate={(status) => setStatus(() => status)}
-      />
-      <View style={styles.buttons}>
-        <Button
-          title={status.isPlaying ? "Pause" : "Play"}
-          onPress={() =>
-            status.isPlaying
-              ? video.current.pauseAsync()
-              : video.current.playAsync()
-          }
-        />
-      </View>
-    </View>
-  );
-};
-
-const ImageDisplayer = (props) => {
-  const images = props.children;
-  return (
-    <View>
-      {images.map((image) => {
-        return (
-          <View key={image}>
-            <View>
-              <Image
-                source={{
-                  uri: image,
-                }}
-                style={styles.image}
-              />
-            </View>
-          </View>
-        );
-      })}
-    </View>
-  );
-};
+import { Divider } from "react-native-paper";
+import Button from "../components/CustomButton";
+import { useSettings } from "../context/SettingsContext";
+import VideoDisplayer from "../components/VideoDisplayer";
+import ImageDisplayer from "../components/ImageDisplayer";
+import CoordinatesDisplayer from "../components/CoordinatesDisplayer";
 
 const DetailsScreen = ({ navigation, route }) => {
   const { id } = route.params;
   const user = usersModel.getUserById(id);
-  console.log("User details", user);
+  const { color } = useSettings();
+  const [image, setImage] = useState(null);
+  console.log("Curr image", image);
+  if (image !== null) {
+    return (
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity
+          style={{ flex: 1 }}
+          onPress={() => {
+            setImage(null);
+          }}
+        >
+          <Image
+            source={{
+              uri: image,
+            }}
+            style={styles.image}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <ScrollView>
       <View title="Game">
-        <Text>{user.username}</Text>
-        <Text>{user.fraction}</Text>
-        <Text>{user.race}</Text>
-        <Text>{user.playerClass}</Text>
-        <Text>{user.level}</Text>
-        <Text>{user.gear}</Text>
+        <Divider style={styles.divider} />
+        <View style={styles.sectionContainer}>
+          <Text style={{ color }}>Game</Text>
+          <View style={styles.sectionContent}>
+            <View style={styles.sectionLine}>
+              <Text style={styles.fieldTitle}>Nickname</Text>
+              <Text>{user.username}</Text>
+            </View>
+
+            <View style={styles.sectionLine}>
+              <Text style={styles.fieldTitle}>Fraction</Text>
+              <Text>{user.fraction}</Text>
+            </View>
+
+            <View style={styles.sectionLine}>
+              <Text style={styles.fieldTitle}>Race</Text>
+              <Text>{user.race}</Text>
+            </View>
+            <View style={styles.sectionLine}>
+              <Text style={styles.fieldTitle}>Class</Text>
+              <Text>{user.playerClass}</Text>
+            </View>
+            <View style={styles.sectionLine}>
+              <Text style={styles.fieldTitle}>Level</Text>
+              <Text>{user.level}</Text>
+            </View>
+            <View style={styles.sectionLine}>
+              <Text style={styles.fieldTitle}>Item level</Text>
+              <Text>{user.gear}</Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.sectionContainer}>
+          <Text style={{ color }}>Real world</Text>
+          <View style={styles.sectionContent}>
+            <View style={styles.sectionLine}>
+              <Text style={styles.fieldTitle}>Name</Text>
+              <Text>{user.realWorldName}</Text>
+            </View>
+
+            <View style={styles.sectionLine}>
+              <Text style={styles.fieldTitle}>Country</Text>
+              <Text>{user.country}</Text>
+            </View>
+
+            <View style={styles.sectionLine}>
+              <Text style={styles.fieldTitle}>City</Text>
+              <Text>{user.city}</Text>
+            </View>
+
+            <View style={styles.sectionLine}>
+              <Text style={styles.fieldTitle}>Age</Text>
+              <Text>{user.age}</Text>
+            </View>
+          </View>
+        </View>
       </View>
-      <View title="Game">
-        <Text>{user.realWorldName}</Text>
-        <Text>{user.country}</Text>
-        <Text>{user.city}</Text>
-        <Text>{user.age}</Text>
-      </View>
-      <ImageDisplayer>{user.imageUrls}</ImageDisplayer>
+
+      <CoordinatesDisplayer>{user}</CoordinatesDisplayer>
+
+      <ImageDisplayer>{{ images: user.imageUrls, setImage }}</ImageDisplayer>
       <VideoDisplayer>{user.videoUrl}</VideoDisplayer>
       <Button
-        title="Edit"
+        style={{ color: color }}
         onPress={() => navigation.navigate("Edit", { user })}
-      ></Button>
+      >
+        {"Edit"}
+      </Button>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    width: 350,
-    height: 55,
-    backgroundColor: "#42A5F5",
-    margin: 10,
-    padding: 8,
-    color: "white",
-    borderRadius: 14,
-    fontSize: 18,
-    fontWeight: "500",
-  },
-  container: {
-    flex: 1,
-    justifyContent: "center",
+  centeredContainer: {
     alignItems: "center",
   },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 8,
+  divider: {
     marginVertical: 10,
+  },
+  sectionContainer: {
+    marginHorizontal: 16,
+    marginVertical: 10,
+  },
+  sectionContent: {
+    marginHorizontal: 10,
+  },
+  fieldTitle: {
+    opacity: 0.5,
+  },
+  sectionLine: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginVertical: 5,
   },
   video: {
     alignSelf: "center",
     width: 320,
     height: 200,
   },
-  buttons: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+  image: {
+    resizeMode: "contain",
+    flex: 1,
+    borderRadius: 8,
+    marginVertical: 10,
   },
 });
 

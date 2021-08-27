@@ -1,6 +1,5 @@
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import HomeScreen from "../screens/Home";
 import MapScreen from "../screens/Map";
@@ -11,27 +10,54 @@ import { useAuth } from "../context/AuthContext";
 import DetailsScreen from "../screens/Details";
 import EditScreen from "../screens/Edit";
 import CoordinatesPicker from "../components/CoordinatesPicker";
+import { useSettings } from "../context/SettingsContext";
+import { useTheme } from "react-native-paper";
 
-const Tab = createBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const TabbedScreen = () => {
+  const { color, isDarkTheme, localize } = useSettings();
+  const { colors } = useTheme();
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      activeColor={color}
+      inactiveColor="grey"
+      barStyle="grey"
+      barStyle={{ backgroundColor: isDarkTheme ? "#494949" : "#e0e0e0" }}
+    >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
         options={{
-          title: "Home",
+          title: localize("Home"),
+          tabBarIcon: "home",
         }}
       ></Tab.Screen>
-      <Tab.Screen name="Settings" component={SettingsScreen} />
-      <Tab.Screen name="Map" component={MapScreen} />
+
+      <Tab.Screen
+        name="Map"
+        component={MapScreen}
+        options={{
+          title: localize("Map"),
+          tabBarIcon: "map",
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          title: localize("Settings"),
+          tabBarIcon: "account-settings-outline",
+        }}
+      />
     </Tab.Navigator>
   );
 };
 
 const useRoutes = () => {
+  const { color, isDarkTheme, localize } = useSettings();
+  const signup = localize("Sign up");
   const { auth } = useAuth();
   if (!auth) {
     return (
@@ -40,14 +66,14 @@ const useRoutes = () => {
           name="SignIn"
           component={SignInScreen}
           options={{
-            title: "Sign in",
+            title: localize("Sign in"),
           }}
         />
         <Stack.Screen
           name="SignUp"
           component={SignUpScreen}
           options={{
-            title: "Sign up",
+            title: localize("Sign up"),
           }}
         />
       </Stack.Navigator>
@@ -66,21 +92,21 @@ const useRoutes = () => {
         name="Details"
         component={DetailsScreen}
         options={{
-          title: "Details",
+          title: localize("Details"),
         }}
       />
       <Stack.Screen
         name="Edit"
         component={EditScreen}
         options={{
-          title: "Edit",
+          title: localize("Edit"),
         }}
       />
       <Stack.Screen
         name="CoordinatesPicker"
         component={CoordinatesPicker}
         options={{
-          title: "CoordinatesPicker",
+          title: localize("Coordinates"),
         }}
       />
     </Stack.Navigator>

@@ -3,7 +3,6 @@ import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { Image, StyleSheet, View, Text } from "react-native";
 import { useUsers } from "../context/UserContext";
 import { mapRegion } from "../constants/costants";
-//import { Text } from "react-native-paper";
 
 const UserMapIcon = (props) => {
   const { user } = props;
@@ -11,12 +10,6 @@ const UserMapIcon = (props) => {
   return (
     <View style={styles.markerContainer}>
       <Text style={styles.markerText}>{user.username}</Text>
-      {/* <Image
-        source={{
-          uri: user.avatarUrl,
-        }}
-        style={styles.image}
-      /> */}
     </View>
   );
 };
@@ -34,8 +27,7 @@ const Map = ({ navigation }) => {
               coordinate={user.coordinates}
               onPress={() =>
                 navigation.navigate("Details", {
-                  userId: user.id,
-                  userName: user.nickname,
+                  id: user.id,
                 })
               }
               key={i}

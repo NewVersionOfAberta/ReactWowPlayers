@@ -53,7 +53,6 @@ export class User {
   }
 
   static fromData(data) {
-    //   console.log("Data:", data);
     let user = new User(
       data.id,
       data.email,
@@ -69,11 +68,9 @@ export class User {
       data.city,
       parseInt(data.age) ?? 0
     );
-    //  console.log("User after constructor", user);
     user.coordinates = data.coordinates;
     user.imageUrls = data.imageUrls;
     user.videoUrl = data.videoUrl;
-    console.log("User after user form", user);
     return user;
   }
 }

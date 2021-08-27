@@ -1,17 +1,11 @@
 import { User } from "./User";
 import Firebase from "../firebase/firebase";
-import { requireNativeComponent } from "react-native";
-
-//const USERS_COLLECTION_NAME = ;
 
 class UsersModel {
   userCollection = Firebase.firestore().collection("users");
 
   users = [];
   setUsers = () => {};
-
-  // loggedUserId = "";
-  // setLoggedUserId = () => {};
 
   async authorize(email, password, login) {
     let message = "";
@@ -45,7 +39,6 @@ class UsersModel {
         .createUserWithEmailAndPassword(form.email, form.password)
         .then(async (credentials) => {
           const id = credentials.user.uid;
-          //console.log("Form", form);
           const newUser = new User(
             id,
             form.email,
@@ -61,9 +54,8 @@ class UsersModel {
             form.city,
             form.age
           );
-          console.log("new user", newUser);
           await this.userCollection.doc(newUser.id).set({ ...newUser });
-          message = "User successfully signed up!: ";
+          message = "User successfully signed up!";
         })
         .catch((error) => {
           message = "Failed signing up";
@@ -107,7 +99,6 @@ class UsersModel {
   }
 
   async updateUser(user) {
-    console.log("To update : ", user);
     await this.userCollection.doc(user.id).set({ ...user });
     this.loadUsers();
   }

@@ -1,8 +1,13 @@
 import React from "react";
 import { useState } from "react";
-import { View, Button, TextInput, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
+import Text from "../components/CustomText";
 import usersModel from "../model/UsersModel";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "react-native-paper";
+import { useSettings } from "../context/SettingsContext";
+import TextInput from "../components/CustomTextInput";
+import Button from "../components/CustomButton";
 
 const SignInScreen = ({ navigation }) => {
   const [message, setMessage] = useState("");
@@ -10,9 +15,10 @@ const SignInScreen = ({ navigation }) => {
     email: "",
     password: "",
   });
+  const { localize } = useSettings();
 
   const { login } = useAuth();
-
+  const theme = useTheme();
   const enter = async () => {
     const message = await usersModel.authorize(
       form.email,
@@ -27,45 +33,42 @@ const SignInScreen = ({ navigation }) => {
   };
 
   return (
-    <View>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <TextInput
-        style={styles.input}
-        placeholder="Email"
-        autoCapitalize="none"
-        placeholderTextColor="white"
+        value={form.email}
+        mode="outlined"
         onChangeText={(val) => onChangeText("email", val)}
+        placeholder={localize("Email")}
+        autoCapitalize="none"
+        style={styles.input}
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        mode="outlined"
+        placeholder={localize("Password")}
         secureTextEntry={true}
         autoCapitalize="none"
-        placeholderTextColor="white"
         onChangeText={(val) => onChangeText("password", val)}
       />
       <Text>{message}</Text>
-      <Button title="Sign in" onPress={enter}></Button>
-      <Button title="Sign up" onPress={() => navigation.navigate("SignUp")} />
+      <Button mode="contained" onPress={enter}>
+        {localize("Sign in")}
+      </Button>
+      <Button title="Sign up" onPress={() => navigation.navigate("SignUp")}>
+        {localize("Sign up")}
+      </Button>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    width: 350,
-    height: 55,
-    backgroundColor: "#42A5F5",
-    margin: 10,
-    padding: 8,
-    color: "white",
-    borderRadius: 14,
-    fontSize: 18,
-    fontWeight: "500",
-  },
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  },
+  input: {
+    marginBottom: 10,
   },
 });
 
